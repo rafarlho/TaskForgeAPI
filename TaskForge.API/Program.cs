@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using TaskForge.Infrastructure;
 using TaskForge.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,11 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 builder.Services.AddControllers();
-
-builder.Services.AddDbContext<TaskForgeDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

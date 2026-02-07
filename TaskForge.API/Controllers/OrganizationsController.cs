@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using TaskForge.Api.DTOs;
-using TaskForge.Infrastructure.Data;
+using TaskForge.Domain.Interfaces.Services;
 
 namespace TaskForge.Api.Controllers;
 
@@ -9,22 +8,30 @@ namespace TaskForge.Api.Controllers;
 [Route("api/[controller]")]
 public class OrganizationsController : ControllerBase
 {
-    private readonly TaskForgeDbContext _context;
+    private readonly IOrganizationService _service;
     private readonly ILogger<OrganizationsController> _logger;
 
     public OrganizationsController(
-        TaskForgeDbContext context,
+        IOrganizationService service,
         ILogger<OrganizationsController> logger
     )
     {
-        _context = context;
+        _service = service;
         _logger = logger;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OrganizationResponseDto>>> GetAll()
     {
-        var organizations = await _context.Organizaions.ToListAsync();
-        return Ok(organizations);
+        try
+        {
+            var organizations = await _service.GetAllAsync();
+            return Ok(organizations);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving organizations");
+            return StatusCode(500, new { message = "An error occurred while retrieving organizations" });
+        }
     }
 }
