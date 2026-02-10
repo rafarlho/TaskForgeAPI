@@ -5,4 +5,5 @@ namespace TaskForge.Domain.Interfaces.Services;
 public interface IOrganizationService
 {
     Task<IEnumerable<Organization>> GetAllAsync();
+    Task<Organization> AddAsync(Organization org);
 }

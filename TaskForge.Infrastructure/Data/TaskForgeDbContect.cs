@@ -23,32 +23,46 @@ public class TaskForgeDbContext : DbContext
 
             entity.Property(e => e.CreatedAt)
                 .IsRequired();
-            
+
             entity.Property(e => e.UpdatedAt)
                 .IsRequired();
-            
+
+            entity.Property(e => e.Version)
+                .IsRowVersion();
+
             entity.HasIndex(e => e.Name);
         });
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var entries = ChangeTracker.Entries()
-            .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+        UpdateBaseEntityFields();
+        return base.SaveChangesAsync(cancellationToken);
+    }
 
-        foreach (var entry in entries)
+    public override int SaveChanges()
+    {
+        UpdateBaseEntityFields();
+        return base.SaveChanges();
+    }
+
+    private void UpdateBaseEntityFields()
+    {
+        var now = DateTime.UtcNow;
+
+        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
         {
-            if (entry.State == EntityState.Added && entry.Entity is Organization addedOrg)
+            if (entry.State == EntityState.Added)
             {
-                addedOrg.CreatedAt = DateTime.UtcNow;
-                addedOrg.UpdatedAt = DateTime.UtcNow;
+                entry.Entity.Id = Guid.NewGuid();
+                entry.Entity.CreatedAt = now;
+                entry.Entity.UpdatedAt = now;
             }
-            else if (entry.State == EntityState.Modified && entry.Entity is Organization modifiedOrg)
+            else if (entry.State == EntityState.Modified)
             {
-                modifiedOrg.UpdatedAt = DateTime.UtcNow;
+                entry.Entity.UpdatedAt = now;
+                entry.Property(e => e.CreatedAt).IsModified = false;
             }
         }
-
-        return base.SaveChangesAsync(cancellationToken);
     }
 }

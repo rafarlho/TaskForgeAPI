@@ -13,6 +13,15 @@ public class OrganizationService : IOrganizationService
         _repository = repository;
     }
 
+    public async Task<Organization> AddAsync(Organization org)
+    {
+        var orgsWithSameName = await _repository.GetByConditionAsync(x => x.Name == org.Name);
+        if (orgsWithSameName.Any()) throw new InvalidOperationException($"An organization with the name '{org.Name}' already exists.");
+
+        return await _repository.AddAsync(org);
+        
+    }
+
     public async Task<IEnumerable<Organization>> GetAllAsync()
     {
         return await _repository.GetAllAsync();

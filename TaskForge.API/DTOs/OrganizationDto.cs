@@ -1,11 +1,12 @@
 namespace TaskForge.Api.DTOs;
 
-public record CreateOrganizaionDto(string Name);
-public record UpdaeOrganizaionDto(string Name);
+public record CreateOrganizationDto(string Name);
+public record UpdateOrganizationDto(string Name);
 
 public record OrganizationResponseDto(
     Guid Id,
     string Name,
     DateTime CreatedAt,
-    DateTime UpdatedAt
+    DateTime UpdatedAt,
+    byte[] Version
 );

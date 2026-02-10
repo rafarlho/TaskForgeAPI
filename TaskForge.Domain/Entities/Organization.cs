@@ -1,9 +1,8 @@
-﻿namespace TaskForge.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class Organization
+namespace TaskForge.Domain.Entities;
+
+public class Organization : BaseEntity
 {
-    public Guid Id {get; set;}
     public required string Name {get; set;}
-    public DateTime CreatedAt {get; set;}
-    public DateTime UpdatedAt {get; set;}
 }

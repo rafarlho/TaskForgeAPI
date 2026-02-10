@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using TaskForge.Infrastructure;
-using TaskForge.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +10,11 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddMaps(typeof(Program).Assembly);
+});
 
 var app = builder.Build();
 
