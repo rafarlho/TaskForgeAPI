@@ -27,33 +27,17 @@ public class OrganizationsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OrganizationResponseDto>>> GetAll()
     {
-        try
-        {
-            var entities = await _service.GetAllAsync();
-            var response = _mapper.Map<IEnumerable<OrganizationResponseDto>>(entities);
-            return Ok(response);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error retrieving organizations");
-            return StatusCode(500, new { message = "An error occurred while retrieving organizations" });
-        }
+        var entities = await _service.GetAllAsync();
+        var response = _mapper.Map<IEnumerable<OrganizationResponseDto>>(entities);
+        return Ok(response);
     }
 
     [HttpPost]
     public async Task<ActionResult<OrganizationResponseDto>> Create(CreateOrganizationDto dto)
     {
-        try
-        {
-            var entity = _mapper.Map<Organization>(dto);
-            var createdEntity = await _service.AddAsync(entity);
-            var newEntity = _mapper.Map<OrganizationResponseDto>(createdEntity);
-            return Ok(newEntity);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error creation organization");
-            return StatusCode(500, new { message = "An error occurred while creating organization " + dto.Name });
-        }
+        var entity = _mapper.Map<Organization>(dto);
+        var createdEntity = await _service.AddAsync(entity);
+        var newEntity = _mapper.Map<OrganizationResponseDto>(createdEntity);
+        return Ok(newEntity);
     }
 }
