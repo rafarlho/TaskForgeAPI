@@ -8,6 +8,7 @@ public class TaskForgeDbContext : DbContext
     : base(options){}
 
     public DbSet<Organization> Organizaions => Set<Organization>();
+    public DbSet<TaskGroup> TaskGroups => Set<TaskGroup>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,6 +32,36 @@ public class TaskForgeDbContext : DbContext
                 .IsRowVersion();
 
             entity.HasIndex(e => e.Name);
+
+            entity.HasMany(e => e.TaskGroups)
+                .WithOne(tg => tg.Organization)
+                .HasForeignKey(tg => tg.OrganizationId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<TaskGroup>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            entity.Property(e => e.CreatedAt)
+                .IsRequired();
+
+            entity.Property(e => e.UpdatedAt)
+                .IsRequired();
+
+            entity.Property(e => e.Version)
+                .IsRowVersion();
+
+            entity.HasIndex(e => e.Name);
+
+            entity.HasOne(e => e.Organization)
+                .WithMany(o => o.TaskGroups)
+                .HasForeignKey(e => e.OrganizationId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 
