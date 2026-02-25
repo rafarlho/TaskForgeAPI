@@ -32,11 +32,28 @@ public class OrganizationsController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<OrganizationResponseDto>> GetById(Guid Id)
+    {
+        var entities = await _service.GetByIdAsync(Id);
+        var response = _mapper.Map<OrganizationResponseDto>(entities);
+        return Ok(response);
+    }
+
     [HttpPost]
     public async Task<ActionResult<OrganizationResponseDto>> Create(CreateOrganizationDto dto)
     {
         var entity = _mapper.Map<Organization>(dto);
         var createdEntity = await _service.AddAsync(entity);
+        var newEntity = _mapper.Map<OrganizationResponseDto>(createdEntity);
+        return Ok(newEntity);
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<OrganizationResponseDto>> Update(UpdateOrganizationDto dto)
+    {
+        var entity = _mapper.Map<Organization>(dto);
+        var createdEntity = await _service.UpdateAsync(entity);
         var newEntity = _mapper.Map<OrganizationResponseDto>(createdEntity);
         return Ok(newEntity);
     }

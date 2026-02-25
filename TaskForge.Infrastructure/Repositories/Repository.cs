@@ -44,9 +44,15 @@ public class Repository<T> : IRepository<T> where T : class
         return _dbSet.FindAsync(id).AsTask();
     }
 
-    public async Task<T> UpdateAsync(T entity)
+    public async Task<T?> UpdateAsync(Guid id, Action<T> updateAction)
     {
-        _dbSet.Update(entity);
+        var entity = await _dbSet.FindAsync(id);
+
+        if (entity == null)
+            return null;
+
+        updateAction(entity);
+
         await _context.SaveChangesAsync();
         return entity;
     }

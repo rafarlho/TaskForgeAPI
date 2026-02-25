@@ -12,4 +12,9 @@ namespace TaskForge.Domain.Entities
         public DateTime UpdatedAt { get; set; }
         public byte[] Version { get; set; } = new byte[0];
     }
+
+    public interface IBaseEntity
+    {
+        public Guid Id { get; set; }
+    }
 }
