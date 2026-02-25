@@ -1,11 +1,14 @@
 namespace TaskForge.Api.DTOs;
 
-public record CreateOrganizationDto(string Name);
-public record UpdateOrganizationDto(Guid Id, string Name, byte[] Version);
+public record CreateTaskGroupDto(string Name, string Description, Guid OrganizationId);
+public record UpdateTaskGroupDto(Guid Id, string Name, string Description, byte[] Version, Guid OrganizationId);
 
-public record OrganizationResponseDto(
+public record TaskGroupResponseDto(
     Guid Id,
     string Name,
+    string Description,
+    Guid OrganizationId,
+    OrganizationResponseDto Organization,
     DateTime CreatedAt,
     DateTime UpdatedAt,
     byte[] Version

@@ -8,14 +8,14 @@ namespace TaskForge.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class OrganizationsController : ControllerBase
+public class OrganizationController : ControllerBase
 {
     private readonly IOrganizationService _service;
-    private readonly ILogger<OrganizationsController> _logger;
+    private readonly ILogger<OrganizationController> _logger;
     private readonly IMapper _mapper;
-    public OrganizationsController(
+    public OrganizationController(
         IOrganizationService service,
-        ILogger<OrganizationsController> logger,
+        ILogger<OrganizationController> logger,
         IMapper mapper
     )
     {

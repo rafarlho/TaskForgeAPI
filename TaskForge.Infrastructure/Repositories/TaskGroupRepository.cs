@@ -4,9 +4,9 @@ using TaskForge.Infrastructure.Data;
 
 namespace TaskForge.Infrastructure.Repositories;
 
-public class TaskGroupRepository : Repository<TaskGroup>, ITaskGroupRepository
+public class OrganizationRepository : Repository<Organization>, IOrganizationRepository
 {
-    public TaskGroupRepository(TaskForgeDbContext context): base(context)
+    public OrganizationRepository(TaskForgeDbContext context): base(context)
     {
         
     }
