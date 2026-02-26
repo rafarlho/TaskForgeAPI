@@ -7,7 +7,7 @@ public class TaskForgeDbContext : DbContext
     public TaskForgeDbContext(DbContextOptions<TaskForgeDbContext> options)
     : base(options){}
 
-    public DbSet<Organization> Organizaions => Set<Organization>();
+    public DbSet<Organization> Organizations => Set<Organization>();
     public DbSet<TaskGroup> TaskGroups => Set<TaskGroup>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

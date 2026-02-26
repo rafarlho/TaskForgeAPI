@@ -8,7 +8,6 @@ public record TaskGroupResponseDto(
     string Name,
     string Description,
     Guid OrganizationId,
-    OrganizationResponseDto Organization,
     DateTime CreatedAt,
     DateTime UpdatedAt,
     byte[] Version

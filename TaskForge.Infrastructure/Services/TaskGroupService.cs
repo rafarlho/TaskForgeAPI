@@ -8,20 +8,22 @@ namespace TaskForge.Infrastructure.Services;
 public class TaskGroupService : ITaskGroupService
 {
     private readonly ITaskGroupRepository _repository;
+    private readonly IOrganizationRepository _organizationRepository;
 
-    public TaskGroupService(ITaskGroupRepository repository)
+    public TaskGroupService(ITaskGroupRepository repository, IOrganizationRepository organizationRepository)
     {
         _repository = repository;
+        _organizationRepository = organizationRepository;
     }
 
-    public async Task<TaskGroup> AddAsync(TaskGroup org)
+    public async Task<TaskGroup> AddAsync(TaskGroup tg)
     {
         
-        var orgsWithSameName = await _repository.GetByConditionAsync(x => x.Name == org.Name);
+        var orgsWithSameName = await _repository.GetByConditionAsync(x => x.Name == tg.Name);
         
-        if (orgsWithSameName.Any()) throw new DuplicateEntityException("TaskGroup", "Name", org.Name);
+        if (orgsWithSameName.Any()) throw new DuplicateEntityException("TaskGroup", "Name", tg.Name);
 
-        return await _repository.AddAsync(org);
+        return await _repository.AddAsync(tg);
         
     }
 
@@ -43,30 +45,44 @@ public class TaskGroupService : ITaskGroupService
         return entity;
     }
 
-    public async Task<TaskGroup> UpdateAsync(TaskGroup org)
+    public async Task<IEnumerable<TaskGroup>> GetByOrgIdAsync(Guid id)
     {
-        if (org.Id == Guid.Empty)
+        if (id == Guid.Empty)
+            throw new ValidationException("OrganizationId", "Organization ID cannot be empty");
+        var org = await _organizationRepository.GetByIdAsync(id);
+        if (org == null)
+            throw new EntityNotFoundException("Organization", id);
+
+        return await _repository.GetByOrgIdAsync(id);
+    }
+
+    public async Task<TaskGroup> UpdateAsync(TaskGroup tg)
+    {
+        if (tg.Id == Guid.Empty)
             throw new ValidationException("Id", "TaskGroup ID cannot be empty");
 
-        var storedOrg = await _repository.GetByIdAsync(org.Id);
+        var storedTg = await _repository.GetByIdAsync(tg.Id);
 
-        if (storedOrg is null)
-            throw new EntityNotFoundException("TaskGroup", org.Id);
+        if (storedTg is null)
+            throw new EntityNotFoundException("TaskGroup", tg.Id);
 
-        if (!storedOrg.Version.SequenceEqual(org.Version))
-            throw new ConcurrencyException("TaskGroup", org.Id);
+        if (!storedTg.Version.SequenceEqual(tg.Version))
+            throw new ConcurrencyException("TaskGroup", tg.Id);
 
-        var orgsWithSameName =
-            await _repository.GetByConditionAsync(x => x.Name == org.Name && x.Id != org.Id);
+        var tgsWithSameName =
+            await _repository.GetByConditionAsync(x => x.Name == tg.Name && x.Id != tg.Id);
 
-        if (orgsWithSameName.Any())
-            throw new DuplicateEntityException("TaskGroup", "Name", org.Name);
+        if (tgsWithSameName.Any())
+            throw new DuplicateEntityException("TaskGroup", "Name", tg.Name);
 
-        var updated = await _repository.UpdateAsync(org.Id, entity =>
+        var updated = await _repository.UpdateAsync(tg.Id, entity => 
         {
-            entity.Name = org.Name;
+            entity.Name = tg.Name;
+            entity.OrganizationId = tg.OrganizationId;
+            entity.Description = tg.Description;
             entity.UpdatedAt = DateTime.UtcNow;
             entity.Version = Guid.NewGuid().ToByteArray();
+            
         });
 
         return updated!;

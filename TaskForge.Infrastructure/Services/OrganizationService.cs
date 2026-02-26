@@ -43,6 +43,16 @@ public class OrganizationService : IOrganizationService
         return entity;
     }
 
+    public async Task<Organization> GetWithTaskGroups(Guid id)
+    {
+        var entity = await _repository.GetWithTaskGroups(id);
+
+        if (entity == null)
+            throw new EntityNotFoundException("Organization", id);
+
+        return entity;
+    }
+
     public async Task<Organization> UpdateAsync(Organization org)
     {
         if (org.Id == Guid.Empty)

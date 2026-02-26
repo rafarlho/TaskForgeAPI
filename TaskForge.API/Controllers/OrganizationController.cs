@@ -40,6 +40,14 @@ public class OrganizationController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("withTaskGroups/{id}")]
+    public async Task<ActionResult<IEnumerable<OrganizationResponseDto>>> GetWithTaskGroups(Guid id)
+    {
+        var entities = await _service.GetWithTaskGroups(id);
+        var response = _mapper.Map<OrganizationResponseDto>(entities);
+        return Ok(response);
+    }
+
     [HttpPost]
     public async Task<ActionResult<OrganizationResponseDto>> Create(CreateOrganizationDto dto)
     {
