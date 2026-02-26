@@ -45,17 +45,6 @@ public class TaskGroupService : ITaskGroupService
         return entity;
     }
 
-    public async Task<IEnumerable<TaskGroup>> GetByOrgIdAsync(Guid id)
-    {
-        if (id == Guid.Empty)
-            throw new ValidationException("OrganizationId", "Organization ID cannot be empty");
-        var org = await _organizationRepository.GetByIdAsync(id);
-        if (org == null)
-            throw new EntityNotFoundException("Organization", id);
-
-        return await _repository.GetByOrgIdAsync(id);
-    }
-
     public async Task<TaskGroup> UpdateAsync(TaskGroup tg)
     {
         if (tg.Id == Guid.Empty)

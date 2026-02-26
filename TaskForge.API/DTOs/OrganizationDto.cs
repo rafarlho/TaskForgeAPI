@@ -1,14 +1,16 @@
+using TaskForge.Domain.Enums;
+
 namespace TaskForge.Api.DTOs;
 
-public record CreateTaskGroupDto(string Name, string Description, Guid OrganizationId);
-public record UpdateTaskGroupDto(Guid Id, string Name, string Description, byte[] Version, Guid OrganizationId);
+public record CreateOrganizationDto(string Name);
+public record UpdateOrganizationDto(Guid Id, string Name, byte[] Version);
 
-public record TaskGroupResponseDto(
+public record OrganizationResponseDto(
     Guid Id,
     string Name,
-    string Description,
-    Guid OrganizationId,
+    IEnumerable<TaskGroupResponseDto> TaskGroups,
     DateTime CreatedAt,
     DateTime UpdatedAt,
+    Status Status,
     byte[] Version
 );

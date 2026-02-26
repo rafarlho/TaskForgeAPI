@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TaskForge.Domain.Entities;
+using Task = TaskForge.Domain.Entities.Task;
 
 namespace TaskForge.Infrastructure.Data;
 public class TaskForgeDbContext : DbContext
@@ -9,6 +10,7 @@ public class TaskForgeDbContext : DbContext
 
     public DbSet<Organization> Organizations => Set<Organization>();
     public DbSet<TaskGroup> TaskGroups => Set<TaskGroup>();
+    public DbSet<Task> Tasks => Set<Task>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -56,11 +58,52 @@ public class TaskForgeDbContext : DbContext
             entity.Property(e => e.Version)
                 .IsRowVersion();
 
+            entity.Property(t => t.Status)
+                .HasConversion<string>();
+
+            entity.Property(e => e.Description)
+                .HasMaxLength(200);
+
             entity.HasIndex(e => e.Name);
 
-            entity.HasOne(e => e.Organization)
-                .WithMany(o => o.TaskGroups)
-                .HasForeignKey(e => e.OrganizationId)
+            entity.HasMany(e => e.Tasks)
+                .WithOne(t => t.TaskGroup)
+                .HasForeignKey(e => e.TaskGroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Task>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            entity.Property(e => e.Description)
+                .HasMaxLength(200);
+
+            entity.Property(e => e.Assignee)
+                .HasMaxLength(200);
+
+            entity.Property(e => e.CreatedAt)
+                .IsRequired();
+
+            entity.Property(e => e.UpdatedAt)
+                .IsRequired();
+
+            entity.Property(e => e.Version)
+                .IsRowVersion();
+
+            entity.Property(t => t.Status)
+                .HasConversion<string>();
+
+
+            entity.HasIndex(e => e.Name);
+
+            entity.HasOne(e => e.TaskGroup)
+                .WithMany(o => o.Tasks)
+                .HasForeignKey(e => e.TaskGroupId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }

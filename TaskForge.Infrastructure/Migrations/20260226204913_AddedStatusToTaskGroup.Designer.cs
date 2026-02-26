@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskForge.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using TaskForge.Infrastructure.Data;
 namespace TaskForge.Infrastructure.Migrations
 {
     [DbContext(typeof(TaskForgeDbContext))]
-    partial class TaskForgeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260226204913_AddedStatusToTaskGroup")]
+    partial class AddedStatusToTaskGroup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,56 +55,6 @@ namespace TaskForge.Infrastructure.Migrations
                     b.ToTable("Organizations");
                 });
 
-            modelBuilder.Entity("TaskForge.Domain.Entities.Task", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Assignee")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("StationName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("TaskGroupId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte[]>("Version")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name");
-
-                    b.HasIndex("TaskGroupId");
-
-                    b.ToTable("Tasks");
-                });
-
             modelBuilder.Entity("TaskForge.Domain.Entities.TaskGroup", b =>
                 {
                     b.Property<Guid>("Id")
@@ -112,8 +65,7 @@ namespace TaskForge.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -145,17 +97,6 @@ namespace TaskForge.Infrastructure.Migrations
                     b.ToTable("TaskGroups");
                 });
 
-            modelBuilder.Entity("TaskForge.Domain.Entities.Task", b =>
-                {
-                    b.HasOne("TaskForge.Domain.Entities.TaskGroup", "TaskGroup")
-                        .WithMany("Tasks")
-                        .HasForeignKey("TaskGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TaskGroup");
-                });
-
             modelBuilder.Entity("TaskForge.Domain.Entities.TaskGroup", b =>
                 {
                     b.HasOne("TaskForge.Domain.Entities.Organization", "Organization")
@@ -170,11 +111,6 @@ namespace TaskForge.Infrastructure.Migrations
             modelBuilder.Entity("TaskForge.Domain.Entities.Organization", b =>
                 {
                     b.Navigation("TaskGroups");
-                });
-
-            modelBuilder.Entity("TaskForge.Domain.Entities.TaskGroup", b =>
-                {
-                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }
