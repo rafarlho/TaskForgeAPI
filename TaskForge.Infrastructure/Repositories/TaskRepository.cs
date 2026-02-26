@@ -1,13 +1,13 @@
-using Microsoft.EntityFrameworkCore;
 using TaskForge.Domain.Entities;
 using TaskForge.Domain.Interfaces.Repositories;
 using TaskForge.Infrastructure.Data;
+using Task = TaskForge.Domain.Entities.Task;
 
 namespace TaskForge.Infrastructure.Repositories;
 
-public class TaskGroupRepository : Repository<TaskGroup>, ITaskGroupRepository
+public class TaskRepository : Repository<Task>, ITaskRepository
 {
-    public TaskGroupRepository(TaskForgeDbContext context): base(context)
+    public TaskRepository(TaskForgeDbContext context): base(context)
     {
         
     }
